@@ -18,8 +18,15 @@ const checkUserExists = async (req, res, next) => {
   }
 }
 
-const validateCredentials = (req, res, next) => {
+const validateCredentials = async (req, res, next) => {
+  const user = await findBy({ username: req.body.username });
 
+  if(!user) {
+    next({ status: 401, message: 'invalid credentials' });
+  } else {
+    req.user = user;
+    next();
+  }
 }
 
 module.exports = {
